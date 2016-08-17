@@ -2061,7 +2061,17 @@ uint32 Unit::CalculateDamage(WeaponAttackType attType, bool normalized, bool add
     float maxDamage = 0.0f;
 
     if (normalized || !addTotalPct)
+    {
         CalculateMinMaxDamage(attType, normalized, addTotalPct, minDamage, maxDamage);
+        if (IsInFeralForm() && attType == BASE_ATTACK)
+        {
+            float minOffhandDamage = 0.0f;
+            float maxOffhandDamage = 0.0f;
+            CalculateMinMaxDamage(OFF_ATTACK, normalized, addTotalPct, minOffhandDamage, maxOffhandDamage);
+            minDamage += minOffhandDamage;
+            maxDamage += maxOffhandDamage;
+        }
+    }
     else
     {
         switch (attType)
@@ -2073,6 +2083,11 @@ uint32 Unit::CalculateDamage(WeaponAttackType attType, bool normalized, bool add
             case BASE_ATTACK:
                 minDamage = GetFloatValue(UNIT_FIELD_MINDAMAGE);
                 maxDamage = GetFloatValue(UNIT_FIELD_MAXDAMAGE);
+                if (IsInFeralForm())
+                {
+                    minDamage += GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
+                    maxDamage += GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
+                }
                 break;
             case OFF_ATTACK:
                 minDamage = GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
@@ -14146,7 +14161,7 @@ float Unit::MeleeSpellMissChance(const Unit* victim, WeaponAttackType attType, u
     //calculate miss chance
     float missChance = victim->GetUnitMissChance(attType);
 
-    if (!spellId && haveOffhandWeapon())
+    if (!spellId && haveOffhandWeapon() && !IsInFeralForm())
         missChance += 19;
 
     // Calculate hit chance
