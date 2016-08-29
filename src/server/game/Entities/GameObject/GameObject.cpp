@@ -54,6 +54,7 @@ GameObject::GameObject() : WorldObject(false), MapObject(),
     m_cooldownTime = 0;
     m_goInfo = NULL;
     m_goData = NULL;
+    m_goTemplateAddon = nullptr;
 
     m_spawnId = UI64LIT(0);
     m_rotation = 0;
@@ -222,6 +223,7 @@ bool GameObject::Create(uint32 name_id, Map* map, uint32 /*phaseMask*/, float x,
     Object::_Create(guid);
 
     m_goInfo = goinfo;
+    m_goTemplateAddon = sObjectMgr->GetGameObjectTemplateAddon(name_id);
 
     if (goinfo->type >= MAX_GAMEOBJECT_TYPE)
     {
@@ -236,8 +238,11 @@ bool GameObject::Create(uint32 name_id, Map* map, uint32 /*phaseMask*/, float x,
 
     SetObjectScale(goinfo->size);
 
-    SetUInt32Value(GAMEOBJECT_FACTION, goinfo->faction);
-    SetUInt32Value(GAMEOBJECT_FLAGS, goinfo->flags);
+    if (m_goTemplateAddon)
+    {
+        SetUInt32Value(GAMEOBJECT_FACTION, m_goTemplateAddon->faction);
+        SetUInt32Value(GAMEOBJECT_FLAGS, m_goTemplateAddon->flags);
+    }
 
     SetEntry(goinfo->entry);
 
@@ -670,8 +675,9 @@ void GameObject::Update(uint32 diff)
                 SetGoState(GO_STATE_READY);
 
                 //any return here in case battleground traps
-                if (GetGOInfo()->flags & GO_FLAG_NODESPAWN)
-                    return;
+                if (GameObjectTemplateAddon const* addon = GetTemplateAddon())
+                    if (addon->flags & GO_FLAG_NODESPAWN)
+                        return;
             }
 
             loot.clear();
@@ -692,7 +698,8 @@ void GameObject::Update(uint32 diff)
             {
                 SendObjectDeSpawnAnim(GetGUID());
                 //reset flags
-                SetUInt32Value(GAMEOBJECT_FLAGS, GetGOInfo()->flags);
+                if (GameObjectTemplateAddon const* addon = GetTemplateAddon())
+                    SetUInt32Value(GAMEOBJECT_FLAGS, addon->flags);
             }
 
             if (!m_respawnDelayTime)
@@ -743,7 +750,9 @@ void GameObject::Delete()
     SendObjectDeSpawnAnim(GetGUID());
 
     SetGoState(GO_STATE_READY);
-    SetUInt32Value(GAMEOBJECT_FLAGS, GetGOInfo()->flags);
+
+    if (GameObjectTemplateAddon const* addon = GetTemplateAddon())
+        SetUInt32Value(GAMEOBJECT_FLAGS, addon->flags);
 
     uint32 poolid = GetSpawnId() ? sPoolMgr->IsPartOfAPool<GameObject>(GetSpawnId()) : 0;
     if (poolid)
