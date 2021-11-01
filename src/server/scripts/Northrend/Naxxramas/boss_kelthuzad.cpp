@@ -221,7 +221,7 @@ struct boss_kelthuzad : public BossAI
                 return;
             _Reset();
             me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
             me->SetImmuneToPC(true);
             _skeletonCount = 0;
             _bansheeCount = 0;
@@ -273,7 +273,7 @@ struct boss_kelthuzad : public BossAI
             Talk(SAY_DEATH);
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+        void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
         {
             if (events.IsInPhase(PHASE_ONE))
                 damage = 0;
@@ -426,7 +426,7 @@ struct boss_kelthuzad : public BossAI
                     case EVENT_PHASE_TWO:
                         me->CastStop();
                         events.SetPhase(PHASE_TWO);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
                         me->SetImmuneToPC(false);
                         ResetThreatList();
                         me->SetReactState(REACT_AGGRESSIVE);
@@ -825,6 +825,7 @@ struct npc_kelthuzad_guardian : public ScriptedAI
         uint32 _bloodTapTimer;
 };
 
+// 28410 - Chains of Kel'Thuzad
 class spell_kelthuzad_chains : public AuraScript
 {
     PrepareAuraScript(spell_kelthuzad_chains);
@@ -846,6 +847,7 @@ class spell_kelthuzad_chains : public AuraScript
     }
 };
 
+// 27819 - Detonate Mana
 class spell_kelthuzad_detonate_mana : public AuraScript
 {
     PrepareAuraScript(spell_kelthuzad_detonate_mana);

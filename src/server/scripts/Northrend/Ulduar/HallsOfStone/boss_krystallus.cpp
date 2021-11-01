@@ -131,6 +131,7 @@ struct boss_krystallus : public BossAI
     }
 };
 
+// 50810, 61546 - Shatter
 class spell_krystallus_shatter : public SpellScript
 {
     PrepareSpellScript(spell_krystallus_shatter);
@@ -150,6 +151,7 @@ class spell_krystallus_shatter : public SpellScript
     }
 };
 
+// 50811, 61547 - Shatter
 class spell_krystallus_shatter_effect : public SpellScript
 {
     PrepareSpellScript(spell_krystallus_shatter_effect);
@@ -159,7 +161,7 @@ class spell_krystallus_shatter_effect : public SpellScript
         if (!GetHitUnit())
             return;
 
-        float radius = GetSpellInfo()->Effects[EFFECT_0].CalcRadius(GetCaster());
+        float radius = GetEffectInfo(EFFECT_0).CalcRadius(GetCaster());
         if (!radius)
             return;
 
