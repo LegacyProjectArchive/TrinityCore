@@ -755,6 +755,7 @@ struct SceneTemplate
 };
 
 typedef std::unordered_map<uint32, SceneTemplate> SceneTemplateContainer;
+typedef std::unordered_map<uint32, std::string> PhaseNameContainer;
 
 struct PlayerChoiceResponseRewardItem
 {
@@ -1265,6 +1266,7 @@ class TC_GAME_API ObjectMgr
 
         void LoadPlayerChoices();
         void LoadPlayerChoicesLocale();
+        void LoadPhaseNames();
 
         std::string GeneratePetName(uint32 entry);
         uint32 GetBaseXP(uint8 level);
@@ -1553,6 +1555,8 @@ class TC_GAME_API ObjectMgr
         std::string GetNormalizedRealmName(uint32 realm) const;
         bool GetRealmName(uint32 realmId, std::string& name, std::string& normalizedName) const;
 
+        std::string GetPhaseName(uint32 phaseId) const;
+
         std::unordered_map<uint8, RaceUnlockRequirement> const& GetRaceUnlockRequirements() const { return _raceUnlockRequirementStore; }
         RaceUnlockRequirement const* GetRaceUnlockRequirement(uint8 race) const
         {
@@ -1758,6 +1762,8 @@ class TC_GAME_API ObjectMgr
             GO_TO_GO,
             GO_TO_CREATURE          // GO is dependant on creature
         };
+
+        PhaseNameContainer _phaseNameStore;
 
         std::set<uint32> _transportMaps; // Helper container storing map ids that are for transports only, loaded from gameobject_template
 };
