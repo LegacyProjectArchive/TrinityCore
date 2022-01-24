@@ -470,29 +470,27 @@ void WorldPackets::Party::PartyMemberStats::Initialize(Player const* player)
         MemberStats.VehicleSeat = player->GetVehicle()->GetVehicleInfo()->SeatID[player->m_movementInfo.transport.seat];
 
     // Auras
-    for (uint8 i = 0; i < MAX_AURAS; ++i)
+    for (AuraApplication const* aurApp : player->GetVisibleAuras())
     {
-        if (AuraApplication const* aurApp = player->GetVisibleAura(i))
+        WorldPackets::Party::PartyMemberAuraStates aura;
+
+        aura.SpellID = aurApp->GetBase()->GetId();
+        aura.ActiveFlags = aurApp->GetEffectMask();
+        aura.Flags = aurApp->GetFlags();
+
+        if (aurApp->GetFlags() & AFLAG_SCALABLE)
         {
-            WorldPackets::Party::GroupAura aura;
-
-            aura.SpellId = aurApp->GetBase()->GetId();
-            aura.EffectMask = aurApp->GetEffectMask();
-            aura.Scalings = aurApp->GetFlags(); // ??
-
-            if (aurApp->GetFlags() & AFLAG_SCALABLE)
+            for (AuraEffect const* aurEff : aurApp->GetBase()->GetAuraEffects())
             {
-                for (uint32 e = 0; e < MAX_SPELL_EFFECTS; ++e)
-                {
-                    float scale = 0.0f;
-                    if (AuraEffect const* eff = aurApp->GetBase()->GetEffect(e))
-                        scale = float(eff->GetAmount());
-                    aura.EffectScales.push_back(scale);
-                }
-            }
+                if (!aurEff)
+                    continue;
 
-            MemberStats.AuraList.push_back(aura);
+                if (aurApp->HasEffect(aurEff->GetEffIndex()))
+                    aura.Points.push_back(float(aurEff->GetAmount()));
+            }
         }
+
+        MemberStats.Auras.push_back(aura);
     }
 
     // Phases
@@ -521,29 +519,27 @@ void WorldPackets::Party::PartyMemberStats::Initialize(Player const* player)
         MemberStats.PetStats->CurrentHealth = pet->GetHealth();
         MemberStats.PetStats->MaxHealth = pet->GetMaxHealth();
 
-        for (uint8 i = 0; i < MAX_AURAS; ++i)
+        for (AuraApplication const* aurApp : pet->GetVisibleAuras())
         {
-            if (AuraApplication const* aurApp = pet->GetVisibleAura(i))
+            WorldPackets::Party::PartyMemberAuraStates aura;
+
+            aura.SpellID = aurApp->GetBase()->GetId();
+            aura.ActiveFlags = aurApp->GetEffectMask();
+            aura.Flags = aurApp->GetFlags();
+
+            if (aurApp->GetFlags() & AFLAG_SCALABLE)
             {
-                WorldPackets::Party::GroupAura aura;
-
-                aura.SpellId = aurApp->GetBase()->GetId();
-                aura.EffectMask = aurApp->GetEffectMask();
-                aura.Scalings = aurApp->GetFlags(); // ??
-
-                if (aurApp->GetFlags() & AFLAG_SCALABLE)
+                for (AuraEffect const* aurEff : aurApp->GetBase()->GetAuraEffects())
                 {
-                    for (uint32 e = 0; e < MAX_SPELL_EFFECTS; ++e)
-                    {
-                        float scale = 0.0f;
-                        if (AuraEffect const* eff = aurApp->GetBase()->GetEffect(e))
-                            scale = float(eff->GetAmount());
-                        aura.EffectScales.push_back(scale);
-                    }
-                }
+                    if (!aurEff)
+                        continue;
 
-                MemberStats.PetStats->AuraList.push_back(aura);
+                    if (aurApp->HasEffect(aurEff->GetEffIndex()))
+                        aura.Points.push_back(float(aurEff->GetAmount()));
+                }
             }
+
+            MemberStats.PetStats->Auras.push_back(aura);
         }
     }
 }
