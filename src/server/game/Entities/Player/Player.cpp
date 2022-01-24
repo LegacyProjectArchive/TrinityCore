@@ -11132,6 +11132,9 @@ Item* Player::StoreItem(ItemPosCountVec const& dest, Item* pItem, bool update)
 
         lastItem = _StoreItem(pos, pItem, count, true, update);
     }
+
+    AutoUnequipChildItem(lastItem);
+
     return lastItem;
 }
 
