@@ -1,13 +1,9 @@
-# ![logo](https://community.trinitycore.org/public/style_images/1_trinitycore.png) TrinityCore
+# ![logo](https://community.trinitycore.org/public/style_images/1_trinitycore.png) TrinityCore 6.2.4 v2
 
-[![Issue Stats](http://www.issuestats.com/github/TrinityCore/TrinityCore/badge/issue)](http://www.issuestats.com/github/TrinityCore/TrinityCore) [![Issue Stats](http://www.issuestats.com/github/TrinityCore/TrinityCore/badge/pr)](http://www.issuestats.com/github/TrinityCore/TrinityCore) [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=1310)](https://www.bountysource.com/trackers/1310-trinity-core?utm_source=1310&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 
 ## Build Status
 
-6.x | 3.3.5
-:------------: | :------------:
-[![6.x Build Status](https://travis-ci.org/TrinityCore/TrinityCore.svg?branch=6.x)](https://travis-ci.org/TrinityCore/TrinityCore) | [![3.3.5 Build Status](https://travis-ci.org/TrinityCore/TrinityCore.svg?branch=3.3.5)](https://travis-ci.org/TrinityCore/TrinityCore)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/435/badge.svg)](https://scan.coverity.com/projects/435) | [![Coverity Scan Build Status](https://scan.coverity.com/projects/4656/badge.svg)](https://scan.coverity.com/projects/4656)
+TBD
 
 ## Introduction
 
@@ -28,15 +24,12 @@ website at [TrinityCore.org](http://www.trinitycore.org).
 
 ## Requirements
 
-
-Software requirements are available in the [wiki](http://www.trinitycore.info/display/tc/Requirements) for
-Windows, Linux and Mac OSX.
+TBD
 
 
 ## Install
 
-Detailed installation guides are available in the [wiki](http://www.trinitycore.info/display/tc/Installation+Guide) for
-Windows, Linux and Mac OSX.
+TBD
 
 
 ## Reporting issues
@@ -78,3 +71,10 @@ Read file [THANKS](THANKS)
 [Documentation](http://www.trinitycore.net) (powered by Doxygen)
 
 [Forums](http://www.trinitycore.org/f/)
+
+## To Be Implimented
+
+*Garrison System
+*Battlepay
+*Zone Scripts (Cataclysm, Pandaria, Draenor)
+*Dungeons Scripted
