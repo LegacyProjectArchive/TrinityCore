@@ -10790,7 +10790,7 @@ bool Unit::IsInDisallowedMountForm() const
         if (!shapeshift)
             return true;
 
-        if (!(shapeshift->Flags & SHAPESHIFT_FORM_IS_NOT_A_SHAPESHIFT))
+        if (!(shapeshift->Flags & 0x1))
             return true;
     }
 
