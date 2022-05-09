@@ -454,8 +454,8 @@ bool Item::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid ownerGuid, Field* fie
             SetSpellCharges(i, atoi(tokens[i]));
 
     SetUInt32Value(ITEM_FIELD_FLAGS, fields[7].GetUInt32());
-    // Remove bind flag for items vs BIND_NONE set
-    if (IsSoulBound() && proto->GetBonding() == BIND_NONE)
+    // Remove bind flag for items vs NO_BIND set
+    if (IsSoulBound() && proto->GetBonding() == NO_BIND)
     {
         ApplyModFlag(ITEM_FIELD_FLAGS, ITEM_FIELD_FLAG_SOULBOUND, false);
         need_save = true;

@@ -143,23 +143,23 @@ bool AuctionBotSeller::Initialize()
         // bounding filters
         switch (prototype->GetBonding())
         {
-            case BIND_NONE:
+            case NO_BIND:
                 if (!sAuctionBotConfig->GetConfig(CONFIG_AHBOT_BIND_NO))
                     continue;
                 break;
-            case BIND_ON_ACQUIRE:
+            case BIND_WHEN_PICKED_UP:
                 if (!sAuctionBotConfig->GetConfig(CONFIG_AHBOT_BIND_PICKUP))
                     continue;
                 break;
-            case BIND_ON_EQUIP:
+            case BIND_WHEN_EQUIPED:
                 if (!sAuctionBotConfig->GetConfig(CONFIG_AHBOT_BIND_EQUIP))
                     continue;
                 break;
-            case BIND_ON_USE:
+            case BIND_WHEN_USE:
                 if (!sAuctionBotConfig->GetConfig(CONFIG_AHBOT_BIND_USE))
                     continue;
                 break;
-            case BIND_QUEST:
+            case BIND_QUEST_ITEM:
                 if (!sAuctionBotConfig->GetConfig(CONFIG_AHBOT_BIND_QUEST))
                     continue;
                 break;
