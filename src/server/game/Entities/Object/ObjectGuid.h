@@ -21,6 +21,7 @@
 
 #include "Define.h"
 #include <deque>
+#include <ostream>
 #include <functional>
 #include <list>
 #include <set>
