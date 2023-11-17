@@ -22,11 +22,9 @@
   #include <winsock2.h>
 #endif
 #include <mysql.h>
-#include <mysqld_error.h>
 #include <errmsg.h>
 
 #include "MySQLConnection.h"
-#include "MySQLThreading.h"
 #include "QueryResult.h"
 #include "SQLOperation.h"
 #include "PreparedStatement.h"
@@ -481,7 +479,7 @@ bool MySQLConnection::_HandleMySQLErrno(uint32 errNo, uint8 attempts /*= 5*/)
     {
         case CR_SERVER_GONE_ERROR:
         case CR_SERVER_LOST:
-        case CR_INVALID_CONN_HANDLE:
+        case ER_INVALID_ON_UPDATE:
         case CR_SERVER_LOST_EXTENDED:
         {
             if (m_Mysql)
