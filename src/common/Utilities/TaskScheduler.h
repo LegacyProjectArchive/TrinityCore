@@ -106,7 +106,7 @@ class TC_COMMON_API TaskScheduler
         }
 
         // Compare tasks with its end
-        inline bool operator== (Task const& other)
+        inline bool operator== (Task const& other) const
         {
             return _end == other._end;
         }
@@ -118,7 +118,7 @@ class TC_COMMON_API TaskScheduler
         }
     };
 
-    typedef std::shared_ptr<Task> TaskContainer;
+    using TaskContainer = std::shared_ptr<Task>;
 
     /// Container which provides Task order, insert and reschedule operations.
     struct Compare
