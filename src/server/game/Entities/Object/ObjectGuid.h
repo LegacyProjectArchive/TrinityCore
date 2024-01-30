@@ -25,6 +25,7 @@
 #include <functional>
 #include <list>
 #include <set>
+#include <ostream>
 #include <type_traits>
 #include <vector>
 #include <unordered_set>
@@ -214,7 +215,7 @@ class TC_GAME_API ObjectGuid
         static ObjectGuid const Empty;
         static ObjectGuid const TradeItem;
 
-        typedef uint64 LowType;
+        using LowType = uint64;
 
         template<HighGuid type>
         static typename std::enable_if<ObjectGuidTraits<type>::Global, ObjectGuid>::type Create(LowType counter) { return Global(type, counter); }
@@ -340,11 +341,11 @@ class TC_GAME_API ObjectGuid
 #pragma pack(pop)
 
 // Some Shared defines
-typedef std::set<ObjectGuid> GuidSet;
-typedef std::list<ObjectGuid> GuidList;
-typedef std::deque<ObjectGuid> GuidDeque;
-typedef std::vector<ObjectGuid> GuidVector;
-typedef std::unordered_set<ObjectGuid> GuidUnorderedSet;
+using GuidSet = std::set<ObjectGuid>;
+using GuidList = std::list<ObjectGuid>;
+using GuidDeque = std::deque<ObjectGuid>;
+using GuidVector = std::vector<ObjectGuid>;
+using GuidUnorderedSet = std::unordered_set<ObjectGuid>;
 
 class TC_GAME_API ObjectGuidGeneratorBase
 {
