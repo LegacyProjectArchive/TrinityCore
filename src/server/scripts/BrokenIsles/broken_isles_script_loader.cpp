@@ -16,11 +16,9 @@
  */
 
 // This is where scripts' loading functions should be declared:
-void AddSC_orderhall_warrior();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddBrokenIslesScripts()
 {
-    AddSC_orderhall_warrior();
 }
