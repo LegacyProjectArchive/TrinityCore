@@ -1076,6 +1076,24 @@ class TC_GAME_API Unit : public WorldObject
         // returns the change in power
         int32 ModifyPower(Powers power, int32 val);
 
+        bool HasUnitFlag(UnitFlags flags) const { return HasFlag(UnitFields::UNIT_FIELD_FLAGS, flags); }
+        void AddUnitFlag(UnitFlags flags) { SetFlag(UnitFields::UNIT_FIELD_FLAGS, flags); }
+        void RemoveUnitFlag(UnitFlags flags) { RemoveFlag(UnitFields::UNIT_FIELD_FLAGS, flags); }
+        void SetUnitFlags(UnitFlags p_Flags) { SetUInt32Value(UNIT_FIELD_FLAGS, p_Flags); }
+
+        bool HasUnitFlag2(UnitFlags2 flags) const { return HasFlag(UnitFields::UNIT_FIELD_FLAGS_2, flags); }
+        void AddUnitFlag2(UnitFlags2 flags) { SetFlag(UnitFields::UNIT_FIELD_FLAGS_2, flags); }
+        void RemoveUnitFlag2(UnitFlags2 flags) { RemoveFlag(UnitFields::UNIT_FIELD_FLAGS_2, flags); }
+        void SetUnitFlags2(UnitFlags2 p_Flags) { SetUInt32Value(UNIT_FIELD_FLAGS_2, p_Flags); }
+
+        bool HasUnitFlag3(UnitFlags3 flags) const { return HasFlag(UnitFields::UNIT_FIELD_FLAGS_3, flags); }
+        void AddUnitFlag3(UnitFlags3 flags) { SetFlag(UnitFields::UNIT_FIELD_FLAGS_3, flags); }
+        void RemoveUnitFlag3(UnitFlags3 flags) { RemoveFlag(UnitFields::UNIT_FIELD_FLAGS_3, flags); }
+        void SetUnitFlags3(UnitFlags3 p_Flags) { SetUInt32Value(UNIT_FIELD_FLAGS_3, p_Flags); }
+
+        Emote GetEmoteState() const { return Emote(Object::GetUInt32Value(UNIT_NPC_EMOTESTATE)); }
+        void SetEmoteState(Emote emote) { Object::SetUInt32Value(UNIT_NPC_EMOTESTATE, emote); }
+
         uint32 GetBaseAttackTime(WeaponAttackType att) const;
         void SetBaseAttackTime(WeaponAttackType att, uint32 val);
         void UpdateAttackTimeField(WeaponAttackType att);
