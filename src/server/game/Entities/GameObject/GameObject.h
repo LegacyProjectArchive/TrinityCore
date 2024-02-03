@@ -303,10 +303,6 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void AIM_Destroy();
         bool AIM_Initialize();
 
-        void SetVisibleByUnitOnly(ObjectGuid unit) { m_visibleByUnitOnly = unit; }
-        bool IsVisibleByUnitOnly() const { return !m_visibleByUnitOnly.IsEmpty(); }
-        ObjectGuid GetVisibleByUnitOnly() const { return m_visibleByUnitOnly; }
-
     protected:
         GameObjectModel* CreateModel();
         void UpdateModel();                                 // updates model in case displayId were changed
@@ -360,6 +356,5 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         GameObjectAI* m_AI;
         uint16 _animKitId;
         uint32 _worldEffectID;
-        ObjectGuid m_visibleByUnitOnly;
 };
 #endif
