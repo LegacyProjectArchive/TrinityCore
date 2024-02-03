@@ -49,6 +49,7 @@ public:
             { "del",   rbac::RBAC_PERM_COMMAND_TELE_DEL,    true, &HandleTeleDelCommand,   "" },
             { "name",  rbac::RBAC_PERM_COMMAND_TELE_NAME,   true, &HandleTeleNameCommand,  "" },
             { "group", rbac::RBAC_PERM_COMMAND_TELE_GROUP, false, &HandleTeleGroupCommand, "" },
+            { "loc",   rbac::RBAC_PERM_COMMAND_TELE_GROUP, false, &HandleTeleLocCommand,   "" },
             { "",      rbac::RBAC_PERM_COMMAND_TELE,       false, &HandleTeleCommand,      "" },
         };
         static std::vector<ChatCommand> commandTable =
@@ -97,7 +98,7 @@ public:
 
         return true;
     }
-
+        
     static bool HandleTeleDelCommand(ChatHandler* handler, const char* args)
     {
         if (!*args)
@@ -341,6 +342,30 @@ public:
             me->SaveRecallPosition();
 
         me->TeleportTo(tele->mapId, tele->position_x, tele->position_y, tele->position_z, tele->orientation);
+        return true;
+    }
+
+    static bool HandleTeleLocCommand(ChatHandler* handler, char const* args)
+    {
+        Player* me = handler->GetSession()->GetPlayer();
+        char const* locStr = strtok((char*)args, " ");
+        if (locStr == nullptr)
+        {
+            handler->SendSysMessage(LANG_COMMAND_TELE_NOLOCATION);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 locID = atoi(locStr);
+        auto loc = sWorldSafeLocsStore.LookupEntry(locID);
+        if (loc == nullptr)
+        {
+            handler->SendSysMessage(LANG_COMMAND_TELE_NOTFOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        me->TeleportTo(loc->MapID, loc->Loc.X, loc->Loc.Y, loc->Loc.Z, loc->Facing);
         return true;
     }
 };
