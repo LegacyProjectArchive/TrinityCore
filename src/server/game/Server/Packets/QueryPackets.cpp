@@ -362,7 +362,7 @@ WorldPacket const* WorldPackets::Query::QuestPOIQueryResponse::Write()
             _worldPacket << int32(questPOIBlobData.Flags);
             _worldPacket << int32(questPOIBlobData.WorldEffectID);
             _worldPacket << int32(questPOIBlobData.PlayerConditionID);
-            _worldPacket << int32(questPOIBlobData.UnkWoD1);
+            _worldPacket << int32(questPOIBlobData.SpawnTrackingID);
             _worldPacket << int32(questPOIBlobData.QuestPOIBlobPointStats.size());
 
             for (QuestPOIBlobPoint const& questPOIBlobPoint : questPOIBlobData.QuestPOIBlobPointStats)
