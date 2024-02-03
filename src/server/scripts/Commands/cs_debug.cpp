@@ -109,7 +109,7 @@ public:
             { "raidreset",     rbac::RBAC_PERM_COMMAND_INSTANCE_UNBIND,     false, &HandleDebugRaidResetCommand,        "" },
             { "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
             { "conversation" , rbac::RBAC_PERM_COMMAND_DEBUG_CONVERSATION,  false, &HandleDebugConversationCommand,     "" },
-            { "personalclone", rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugBecomePersonalClone,     "" }
+            { "personalclone", rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugBecomePersonalClone,     "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1571,7 +1571,7 @@ public:
         return Conversation::CreateConversation(conversationEntry, target, *target, { target->GetGUID() }) != nullptr;
     }
 
-    static bool HandleDebugBecomePersonalClone(ChatHandler* handler)
+    static bool HandleDebugBecomePersonalClone(ChatHandler* handler, char const* args)
     {
         Creature* selection = handler->getSelectedCreature();
         if (!selection)
