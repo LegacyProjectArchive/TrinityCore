@@ -2365,7 +2365,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, bool personalSpawn /*= false*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, ObjectGuid privateObjectOwner /*= ObjectGuid::Empty*/)
 {
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)
@@ -2451,8 +2451,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
 
     summon->InitStats(duration);
 
-    if (personalSpawn && summoner)
-        summon->SetPrivateObjectOwner(summoner->IsPrivateObject() ? summoner->GetPrivateObjectOwner() : summoner->GetGUID());
+    summon->SetPrivateObjectOwner(privateObjectOwner);
 
     AddToMap(summon->ToCreature());
     summon->InitSummon();
@@ -2508,11 +2507,11 @@ Scenario* WorldObject::GetScenario() const
     return nullptr;
 }
 
-TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempSummonType spwtype /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 duration /*= 0*/, uint32 vehId /*= 0*/, bool personalSpawn /*= false*/)
+TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempSummonType spwtype /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 duration /*= 0*/, uint32 vehId /*= 0*/, ObjectGuid privateObjectOwner /* = ObjectGuid::Empty */)
 {
     if (Map* map = FindMap())
     {
-        if (TempSummon* summon = map->SummonCreature(entry, pos, nullptr, duration, ToUnit(), 0, vehId, personalSpawn))
+        if (TempSummon* summon = map->SummonCreature(entry, pos, nullptr, duration, ToUnit(), 0, vehId, privateObjectOwner))
         {
             summon->SetTempSummonType(spwtype);
             return summon;
@@ -2522,7 +2521,7 @@ TempSummon* WorldObject::SummonCreature(uint32 entry, Position const& pos, TempS
     return nullptr;
 }
 
-TempSummon* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float ang /*= 0*/, TempSummonType spwtype /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despwtime /*= 0*/, bool personalSpawn /*= false*/)
+TempSummon* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float ang /*= 0*/, TempSummonType spwtype /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despwtime /*= 0*/, ObjectGuid privateObjectOwner /* = ObjectGuid::Empty */)
 {
     if (!x && !y && !z)
     {
@@ -2532,7 +2531,7 @@ TempSummon* WorldObject::SummonCreature(uint32 id, float x, float y, float z, fl
 
     Position pos;
     pos.Relocate(x, y, z, ang);
-    return SummonCreature(id, pos, spwtype, despwtime, 0, personalSpawn);
+    return SummonCreature(id, pos, spwtype, despwtime, 0, privateObjectOwner);
 }
 
 GameObject* WorldObject::SummonGameObject(uint32 entry, Position const& pos, QuaternionData const& rot, uint32 respawnTime)

@@ -1407,7 +1407,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (!summoner)
                 break;
 
-            bool personalSpawn = flags.HasFlag(SmartActionSummonCreatureFlags::PersonalSpawn);
+            ObjectGuid privateObjectOwner;
+            if (flags.HasFlag(SmartActionSummonCreatureFlags::PersonalSpawn))
+                privateObjectOwner = summoner->IsPrivateObject() ? summoner->GetPrivateObjectOwner() : summoner->GetGUID();
+
 
             ObjectList* targets = GetTargets(e, unit);
 
@@ -1421,7 +1424,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     y += e.target.y;
                     z += e.target.z;
                     o += e.target.o;
-                    if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration, personalSpawn))
+                    if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration, privateObjectOwner))
                         if (e.action.summonCreature.attackInvoker)
                             summon->AI()->AttackStart((*itr)->ToUnit());
                 }
@@ -1432,7 +1435,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (e.GetTargetType() != SMART_TARGET_POSITION)
                 break;
 
-            if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration, personalSpawn))
+            if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration, privateObjectOwner))
                 if (unit && e.action.summonCreature.attackInvoker)
                     summon->AI()->AttackStart(unit);
             break;
