@@ -28,15 +28,14 @@
 #include "SharedDefines.h"
 #include <array>
 #include <map>
+#include <Group.h>
 
 enum MountStatusFlags : uint8;
 enum UnitStandStateType : uint8;
 enum WeatherState : uint32;
 
-namespace WorldPackets
+namespace WorldPackets::Misc
 {
-    namespace Misc
-    {
         class BindPointUpdate final : public ServerPacket
         {
         public:
@@ -895,7 +894,18 @@ namespace WorldPackets
 
             ObjectGuid SourceGuid;
         };
-    }
+
+        class StartTimer final : public ServerPacket
+        {
+        public:
+            StartTimer() : ServerPacket(SMSG_START_TIMER, 12) { }
+
+            WorldPacket const* Write() override;
+
+            Duration<Seconds> TotalTime;
+            Duration<Seconds> TimeLeft;
+            CountdownTimerType Type = {};
+        };
 }
 
 #endif // MiscPackets_h__

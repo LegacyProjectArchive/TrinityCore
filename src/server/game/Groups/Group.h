@@ -170,6 +170,13 @@ enum GroupUpdatePetFlags
                             GROUP_UPDATE_FLAG_PET_CUR_HP | GROUP_UPDATE_FLAG_PET_MAX_HP | GROUP_UPDATE_FLAG_PET_AURAS // all pet flags
 };
 
+enum class CountdownTimerType : int32
+{
+    Pvp = 0,
+    ChallengeMode = 1,
+    PlayerCountdown = 2
+};
+
 class Roll : public LootValidatorRef
 {
     public:
