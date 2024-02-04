@@ -49,6 +49,7 @@ EndScriptData */
 #include "WardenCheckMgr.h"
 #include "WaypointManager.h"
 #include "World.h"
+#include <ScenarioMgr.h>
 
 class reload_commandscript : public CommandScript
 {
@@ -95,6 +96,8 @@ public:
             { "creature_onkill_reputation",    rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_ONKILL_REPUTATION,       true,  &HandleReloadOnKillReputationCommand,           "" },
             { "creature_queststarter",         rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_QUESTSTARTER,            true,  &HandleReloadCreatureQuestStarterCommand,       "" },
             { "creature_summon_groups",        rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_SUMMON_GROUPS,           true,  &HandleReloadCreatureSummonGroupsCommand,       "" },
+            { "creature_equip_templates",      rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE,                true,  &HandleReloadCreatureEquipTemplates,            "" },
+            { "creature_template_addons",      rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE,                true,  &HandleReloadCreatureAddonTemplates,            "" },
             { "creature_template",             rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE,                true,  &HandleReloadCreatureTemplateCommand,           "" },
             { "criteria_data",                 rbac::RBAC_PERM_COMMAND_RELOAD_CRITERIA_DATA,                    true,  &HandleReloadCriteriaDataCommand,               "" },
             { "disables",                      rbac::RBAC_PERM_COMMAND_RELOAD_DISABLES,                         true,  &HandleReloadDisablesCommand,                   "" },
@@ -141,6 +144,7 @@ public:
             { "skill_extra_item_template",     rbac::RBAC_PERM_COMMAND_RELOAD_SKILL_EXTRA_ITEM_TEMPLATE,        true,  &HandleReloadSkillExtraItemTemplateCommand,     "" },
             { "skill_fishing_base_level",      rbac::RBAC_PERM_COMMAND_RELOAD_SKILL_FISHING_BASE_LEVEL,         true,  &HandleReloadSkillFishingBaseLevelCommand,      "" },
             { "skinning_loot_template",        rbac::RBAC_PERM_COMMAND_RELOAD_SKINNING_LOOT_TEMPLATE,           true,  &HandleReloadLootTemplatesSkinningCommand,      "" },
+            { "scenarios",                     rbac::RBAC_PERM_COMMAND_RELOAD,                                  true,  &HandleReloadScenario,                          "" },
             { "smart_scripts",                 rbac::RBAC_PERM_COMMAND_RELOAD_SMART_SCRIPTS,                    true,  &HandleReloadSmartScripts,                      "" },
             { "spell_required",                rbac::RBAC_PERM_COMMAND_RELOAD_SPELL_REQUIRED,                   true,  &HandleReloadSpellRequiredCommand,              "" },
             { "spell_area",                    rbac::RBAC_PERM_COMMAND_RELOAD_SPELL_AREA,                       true,  &HandleReloadSpellAreaCommand,                  "" },
@@ -418,6 +422,22 @@ public:
         TC_LOG_INFO("misc", "Reloading creature summon groups...");
         sObjectMgr->LoadTempSummons();
         handler->SendGlobalGMSysMessage("DB table `creature_summon_groups` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadCreatureEquipTemplates(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Loading creature equip template... (`creature_equip_template`)");
+        sObjectMgr->LoadEquipmentTemplates();
+        handler->SendGlobalGMSysMessage("DB table `creature_equip_template` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadCreatureAddonTemplates(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Loading creature template addon... (`creature_template_addon`)");
+        sObjectMgr->LoadCreatureTemplateAddons();
+        handler->SendGlobalGMSysMessage("DB table `creature_template_addon` reloaded.");
         return true;
     }
 
@@ -754,6 +774,14 @@ public:
         TC_LOG_INFO("misc", "Re-Loading `reputation_spillover_template` Table!" );
         sObjectMgr->LoadReputationSpilloverTemplate();
         handler->SendGlobalSysMessage("DB table `reputation_spillover_template` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadScenario(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Scenario Data... ");
+        sScenarioMgr->LoadDBData();
+        handler->SendGlobalGMSysMessage("DB table `scenario` reloaded.");
         return true;
     }
 

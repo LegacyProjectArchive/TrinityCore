@@ -528,6 +528,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
 void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
+    _creatureTemplateAddonStore.clear();
 
     //                                                 0       1       2      3       4       5        6             7              8          9
     QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, aiAnimKit, movementAnimKit, meleeAnimKit, auras FROM creature_template_addon");
@@ -1304,6 +1305,8 @@ EquipmentInfo const* ObjectMgr::GetEquipmentInfo(uint32 entry, int8& id) const
 
 void ObjectMgr::LoadEquipmentTemplates()
 {
+    _equipmentInfoStore.clear();
+
     uint32 oldMSTime = getMSTime();
 
     //                                                        0   1        2                 3            4
