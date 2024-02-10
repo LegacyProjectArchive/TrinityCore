@@ -1873,6 +1873,15 @@ struct MapEntry
     bool IsGarrison() const { return (Flags[0] & MAP_FLAG_GARRISON) != 0; }
 };
 
+struct MapChallengeModeEntry
+{
+    LocalizedString* Name;
+    uint32 ID;
+    uint16 MapID;
+    std::array<int16, 3> CriteriaCount;
+    uint8 Flags;
+};
+
 struct MapDifficultyEntry
 {
     uint32 ID;
