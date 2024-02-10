@@ -44,6 +44,11 @@ website at [TrinityCore.org](https://www.trinitycore.org).
 
 ## Requirements
 
+- Boost => 1.68 (latest stable recommended)
+- MySQL ≥ 5.7
+- OpenSSL => 1.0.x
+- CMake ≥ 3.18.4 (latest stable recommended)
+- MS Visual Studio (Community) ≥ 17.4 (2022) (Desktop) (Not previews)
 
 Software requirements are available in the [wiki](https://www.trinitycore.info/display/tc/Requirements) for
 Windows, Linux and macOS.
