@@ -36,6 +36,7 @@
 #include "Formulas.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
+#include "InstanceChallenge.h"
 #include "InstanceSaveMgr.h"
 #include "InstanceScript.h"
 #include "Item.h"
@@ -8507,6 +8508,10 @@ void Unit::setDeathState(DeathState s)
         // players in instance don't have ZoneScript, but they have InstanceScript
         if (ZoneScript* zoneScript = GetZoneScript() ? GetZoneScript() : GetInstanceScript())
             zoneScript->OnUnitDeath(this);
+
+        if (InstanceMap* instanceMap = GetMap()->ToInstanceMap())
+            if (InstanceChallenge* challenge = instanceMap->IsChallenge() ? instanceMap->GetInstanceChallenge() : nullptr)
+                challenge->OnUnitDeath(this);
     }
     else if (s == JUST_RESPAWNED)
         RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE); // clear skinnable for creature and player (at battleground)

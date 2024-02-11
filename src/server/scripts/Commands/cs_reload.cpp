@@ -50,6 +50,7 @@ EndScriptData */
 #include "WaypointManager.h"
 #include "World.h"
 #include <ScenarioMgr.h>
+#include <ChallengeMgr.h>
 
 class reload_commandscript : public CommandScript
 {
@@ -84,6 +85,7 @@ public:
             { "areatrigger_template",          rbac::RBAC_PERM_COMMAND_RELOAD_AREATRIGGER_TEMPLATE,             true,  &HandleReloadAreaTriggerTemplateCommand,        "" },
             { "autobroadcast",                 rbac::RBAC_PERM_COMMAND_RELOAD_AUTOBROADCAST,                    true,  &HandleReloadAutobroadcastCommand,              "" },
             { "battleground_template",         rbac::RBAC_PERM_COMMAND_RELOAD_BATTLEGROUND_TEMPLATE,            true,  &HandleReloadBattlegroundTemplate,              "" },
+            { "challenge_dungeon",             rbac::RBAC_PERM_COMMAND_RELOAD_LFG_DUNGEON_REWARDS,              true,  &HandleReloadChallengeDungeon,                 "" },
             { "character_template",            rbac::RBAC_PERM_COMMAND_RELOAD_CHARACTER_TEMPLATE,               true,  &HandleReloadCharacterTemplate,                 "" },
             { "command",                       rbac::RBAC_PERM_COMMAND_RELOAD_COMMAND,                          true,  &HandleReloadCommandCommand,                    "" },
             { "conditions",                    rbac::RBAC_PERM_COMMAND_RELOAD_CONDITIONS,                       true,  &HandleReloadConditions,                        "" },
@@ -782,6 +784,14 @@ public:
         TC_LOG_INFO("misc", "Re-Loading Scenario Data... ");
         sScenarioMgr->LoadDBData();
         handler->SendGlobalGMSysMessage("DB table `scenario` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadChallengeDungeon(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Challenge Dungeon Data... ");
+        sChallengeMgr->LoadDBData();
+        handler->SendGlobalGMSysMessage("DB table `challenge_dungeon_template` reloaded.");
         return true;
     }
 

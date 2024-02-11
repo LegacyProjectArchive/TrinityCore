@@ -46,6 +46,7 @@ class InstanceMap;
 class InstanceSave;
 class InstanceScript;
 class InstanceScenario;
+class InstanceChallenge;
 class MapInstanced;
 class Object;
 class PhaseShift;
@@ -400,6 +401,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool IsDungeon() const;
         bool IsNonRaidDungeon() const;
         bool IsRaid() const;
+        bool IsMythic() const;
+        bool IsChallenge() const;
         bool IsRaidOrHeroicDungeon() const;
         bool IsHeroic() const;
         bool Is25ManRaid() const;
@@ -779,7 +782,10 @@ class TC_GAME_API InstanceMap : public Map
         InstanceScript const* GetInstanceScript() const { return i_data; }
         InstanceScenario* GetInstanceScenario() { return i_scenario; }
         InstanceScenario const* GetInstanceScenario() const { return i_scenario; }
+        InstanceChallenge const* GetInstanceChallenge() const { return i_challenge; }
+        InstanceChallenge* GetInstanceChallenge() { return i_challenge; }
         void SetInstanceScenario(InstanceScenario* scenario) { i_scenario = scenario; }
+        void SetInstanceChallenge(InstanceChallenge* challenge) { i_challenge = challenge; }
         void PermBindAllPlayers();
         void UnloadAll() override;
         EnterState CannotEnter(Player* player) override;
@@ -799,6 +805,7 @@ class TC_GAME_API InstanceMap : public Map
         InstanceScript* i_data;
         uint32 i_script_id;
         InstanceScenario* i_scenario;
+        InstanceChallenge* i_challenge;
 };
 
 class TC_GAME_API BattlegroundMap : public Map
