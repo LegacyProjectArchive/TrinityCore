@@ -902,9 +902,31 @@ namespace WorldPackets::Misc
 
             WorldPacket const* Write() override;
 
-            Duration<Seconds> TotalTime;
-            Duration<Seconds> TimeLeft;
+            Duration<Seconds, uint32> TotalTime;
+            Duration<Seconds, uint32> TimeLeft;
             CountdownTimerType Type = {};
+        };
+
+        class StartElapsedTimer final : public ServerPacket
+        {
+        public:
+            StartElapsedTimer() : ServerPacket(SMSG_START_ELAPSED_TIMER, 8) { }
+
+            WorldPacket const* Write() override;
+
+            CountdownTimerType Type = {};
+            Duration<Seconds, uint32> CurrentDuration;
+        };
+
+        class StopElapsedTimer final : public ServerPacket
+        {
+        public:
+            StopElapsedTimer() : ServerPacket(SMSG_STOP_ELAPSED_TIMER, 5) { }
+
+            WorldPacket const* Write() override;
+
+            CountdownTimerType Type = {};
+            bool KeepTimer{ false };
         };
 }
 

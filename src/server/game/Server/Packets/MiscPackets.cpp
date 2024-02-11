@@ -686,3 +686,19 @@ WorldPacket const* WorldPackets::Misc::StartTimer::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const* WorldPackets::Misc::StartElapsedTimer::Write()
+{
+    _worldPacket << uint32(Type);
+    _worldPacket << CurrentDuration;
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Misc::StopElapsedTimer::Write()
+{
+    _worldPacket << uint32(Type);
+    _worldPacket.WriteBit(KeepTimer);
+
+    return &_worldPacket;
+}
