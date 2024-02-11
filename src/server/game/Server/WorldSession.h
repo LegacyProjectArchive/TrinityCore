@@ -186,6 +186,12 @@ namespace WorldPackets
         class CalendarComplain;
     }
 
+    namespace Challenge
+    {
+        class StartChallengeMode;
+        class RequestLeaders;
+    }
+
     namespace Character
     {
         struct CharacterCreateInfo;
@@ -1719,6 +1725,10 @@ class TC_GAME_API WorldSession
 
         // Honor
         void HandlePvpPrestigeRankUp(WorldPackets::Misc::PvpPrestigeRankUp& /*pvpPrestigeRankUp*/);
+
+        // Challenge
+        void HandleStartChallengeMode(WorldPackets::Challenge::StartChallengeMode& startChallengeMode);
+        void HandleRequestLeadersChallengeMode(WorldPackets::Challenge::RequestLeaders& requestLeaders);
 
         union ConnectToKey
         {
