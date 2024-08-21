@@ -677,3 +677,28 @@ void WorldPackets::Misc::CloseInteraction::Read()
 {
     _worldPacket >> SourceGuid;
 }
+
+WorldPacket const* WorldPackets::Misc::StartTimer::Write()
+{
+    _worldPacket << TimeLeft;
+    _worldPacket << TotalTime;
+    _worldPacket << int32(Type);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Misc::StartElapsedTimer::Write()
+{
+    _worldPacket << uint32(Type);
+    _worldPacket << CurrentDuration;
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Misc::StopElapsedTimer::Write()
+{
+    _worldPacket << uint32(Type);
+    _worldPacket.WriteBit(KeepTimer);
+
+    return &_worldPacket;
+}

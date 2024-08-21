@@ -434,7 +434,7 @@ void PhasingHandler::InitDbPhaseShift(PhaseShift& phaseShift, uint8 phaseUseFlag
     phaseShift.ClearPhases();
     phaseShift.IsDbPhaseShift = true;
 
-    EnumClassFlag<PhaseShiftFlags> flags = PhaseShiftFlags::None;
+    EnumFlag<PhaseShiftFlags> flags = PhaseShiftFlags::None;
     if (phaseUseFlags & PHASE_USE_FLAGS_ALWAYS_VISIBLE)
         flags = flags | PhaseShiftFlags::AlwaysVisible | PhaseShiftFlags::Unphased;
     if (phaseUseFlags & PHASE_USE_FLAGS_INVERSE)
@@ -502,7 +502,7 @@ void PhasingHandler::SetAlwaysVisible(PhaseShift& phaseShift, bool apply)
     if (apply)
         phaseShift.Flags |= PhaseShiftFlags::AlwaysVisible;
     else
-        phaseShift.Flags &= ~EnumClassFlag<PhaseShiftFlags>(PhaseShiftFlags::AlwaysVisible);
+        phaseShift.Flags &= ~PhaseShiftFlags::AlwaysVisible;
 }
 
 void PhasingHandler::SetInversed(PhaseShift& phaseShift, bool apply)
@@ -510,7 +510,7 @@ void PhasingHandler::SetInversed(PhaseShift& phaseShift, bool apply)
     if (apply)
         phaseShift.Flags |= PhaseShiftFlags::Inverse;
     else
-        phaseShift.Flags &= ~EnumClassFlag<PhaseShiftFlags>(PhaseShiftFlags::Inverse);
+        phaseShift.Flags &= PhaseShiftFlags::Inverse;
 
     phaseShift.UpdateUnphasedFlag();
 }
@@ -525,12 +525,13 @@ void PhasingHandler::PrintToChat(ChatHandler* chat, PhaseShift const& phaseShift
         std::string personal = sObjectMgr->GetTrinityString(LANG_PHASE_FLAG_PERSONAL, chat->GetSessionDbLocaleIndex());
         for (PhaseShift::PhaseRef const& phase : phaseShift.Phases)
         {
-            phases << phase.Id;
+            phases << "\r\n";
+            phases << ' ' << ' ' << ' ';
+            phases << phase.Id << ' ' << '(' << sObjectMgr->GetPhaseName(phase.Id) << ')';
             if (phase.Flags.HasFlag(PhaseFlags::Cosmetic))
                 phases << ' ' << '(' << cosmetic << ')';
             if (phase.Flags.HasFlag(PhaseFlags::Personal))
                 phases << ' ' << '(' << personal << ')';
-            phases << ", ";
         }
 
         chat->PSendSysMessage(LANG_PHASESHIFT_PHASES, phases.str().c_str());

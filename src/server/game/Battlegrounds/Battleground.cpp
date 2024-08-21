@@ -403,7 +403,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
     if (m_ResetStatTimer > 5000)
     {
         m_ResetStatTimer = 0;
-        for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+        for (auto itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
             if (Player* player = ObjectAccessor::FindPlayer(itr->first))
                 player->ResetAllPowers();
     }
@@ -413,14 +413,15 @@ inline void Battleground::_ProcessJoin(uint32 diff)
     {
         uint32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
 
-        WorldPacket data(SMSG_START_TIMER, 4+4+4);
-        data << uint32(0); // unk
-        data << uint32(countdownMaxForBGType - (GetElapsedTime() / 1000));
-        data << uint32(countdownMaxForBGType);
+        WorldPackets::Misc::StartTimer startTimer;
 
-        for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+        startTimer.Type = CountdownTimerType::Pvp;
+        startTimer.TotalTime = Seconds(countdownMaxForBGType);
+        startTimer.TimeLeft = Seconds(countdownMaxForBGType - (GetElapsedTime() / 1000));
+
+        for (auto itr = GetPlayers().cbegin(); itr != GetPlayers().cend(); ++itr)
             if (Player* player = ObjectAccessor::FindPlayer(itr->first))
-                player->SendDirectMessage(&data);
+                player->SendDirectMessage(startTimer.Write());
 
         m_CountdownTimer = 0;
     }

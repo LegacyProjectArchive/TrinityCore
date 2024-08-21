@@ -46,6 +46,9 @@ EndScriptData */
 #include "WorldSession.h"
 #include <fstream>
 #include <limits>
+#include <ChallengePackets.h>
+
+#include "InstanceChallenge.h"
 
 class debug_commandscript : public CommandScript
 {
@@ -109,6 +112,9 @@ public:
             { "raidreset",     rbac::RBAC_PERM_COMMAND_INSTANCE_UNBIND,     false, &HandleDebugRaidResetCommand,        "" },
             { "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
             { "conversation" , rbac::RBAC_PERM_COMMAND_DEBUG_CONVERSATION,  false, &HandleDebugConversationCommand,     "" },
+            { "personalclone", rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugBecomePersonalClone,     "" },
+            { "randomkeystone",rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugRandomKeystone,          "" },
+            { "starttimer"    ,rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugStartTimer,              "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1568,6 +1574,72 @@ public:
         }
 
         return Conversation::CreateConversation(conversationEntry, target, *target, { target->GetGUID() }) != nullptr;
+    }
+
+    static bool HandleDebugBecomePersonalClone(ChatHandler* handler, char const* args)
+    {
+        Creature* selection = handler->getSelectedCreature();
+        if (!selection)
+            return false;
+
+        Player* player = handler->GetSession()->GetPlayer();
+        selection->SummonPersonalClone(player->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 0s, 0, 0, player);
+        return true;
+    }
+
+    static bool HandleDebugRandomKeystone(ChatHandler* handler, char const* args)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+        if (!player)
+            return false;
+
+        Item* l_Item = player->GetItemByEntry(138019);
+        if (!l_Item && player->AddItem(138019, 1))
+            l_Item = player->GetItemByEntry(138019);
+
+        std::array<uint32, 5> l_AffixOne = { 5,6,7,8, 11 };
+        std::array<uint32, 7> l_AffixTwo = { 1,2,3,4,12,13,14 };
+        std::array<uint32, 13> l_ChallengeMaps = { 197,198,199,200,206,207,208,209,210,227,233,234,239 };
+
+        uint32 const challengeLevel = urand(2, 20);
+        l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_LEVEL, challengeLevel);
+        l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_MAP_CHALLENGE_MODE_ID, 207);
+
+        if (challengeLevel > 3)
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_1, Trinity::Containers::SelectRandomContainerElement(l_AffixOne));
+        else
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_1, 0);
+
+        if (challengeLevel > 6)
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_2, Trinity::Containers::SelectRandomContainerElement(l_AffixTwo));
+
+        else
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_2, 0);
+
+        if (challengeLevel > 9)
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_3, urand(9, 10));
+        else
+            l_Item->SetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_3, 0);
+
+        l_Item->SetState(ITEM_CHANGED, player);
+
+        return true;
+    }
+
+    static bool HandleDebugStartTimer(ChatHandler* handler, char const* args)
+    {
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        Player* player = handler->GetSession()->GetPlayer();
+        if (!player)
+            return false;
+
+        InstanceMap* instance = player->GetMap()->ToInstanceMap();
+
+        if (instance && instance->IsChallenge())
+            instance->GetInstanceChallenge()->Complete();
+
+        return true;
     }
 };
 

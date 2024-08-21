@@ -29,6 +29,7 @@
 #include "GridStates.h"
 #include "Group.h"
 #include "InstancePackets.h"
+#include "InstanceChallenge.h"
 #include "InstanceScenario.h"
 #include "InstanceScript.h"
 #include "Log.h"
@@ -3335,7 +3336,7 @@ template TC_GAME_API void Map::RemoveFromMap(Conversation*, bool);
 InstanceMap::InstanceMap(uint32 id, time_t expiry, uint32 InstanceId, Difficulty SpawnMode, Map* _parent)
   : Map(id, expiry, InstanceId, SpawnMode, _parent),
     m_resetAfterUnload(false), m_unloadWhenEmpty(false),
-    i_data(NULL), i_script_id(0), i_scenario(nullptr)
+    i_data(NULL), i_script_id(0), i_scenario(nullptr), i_challenge(nullptr)
 {
     //lets initialize visibility distance for dungeons
     InstanceMap::InitVisibilityDistance();
@@ -3349,6 +3350,7 @@ InstanceMap::~InstanceMap()
 {
     delete i_data;
     delete i_scenario;
+    delete i_challenge;
 }
 
 void InstanceMap::InitVisibilityDistance()
@@ -3505,6 +3507,15 @@ bool InstanceMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
         m_unloadTimer = 0;
         m_resetAfterUnload = false;
         m_unloadWhenEmpty = false;
+
+        if (GetDifficultyID() == Difficulty::DIFFICULTY_MYTHIC_KEYSTONE)
+        {
+            Group* group = player->GetGroup();
+            ChallengeData const* data = sChallengeMgr->GetChallengeData(group ? group->GetGUID() : player->GetGUID());
+
+            if (data && i_challenge && !i_challenge->HasDataInitialized())
+                i_challenge->SetChallengeData(*data);
+        }
     }
 
     // this will acquire the same mutex so it cannot be in the previous block
@@ -3515,6 +3526,9 @@ bool InstanceMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
 
     if (i_scenario)
         i_scenario->OnPlayerEnter(player);
+
+    if (i_challenge)
+        i_challenge->OnPlayerEnter(player);
 
     return true;
 }
@@ -3531,6 +3545,9 @@ void InstanceMap::Update(const uint32 t_diff)
 
     if (i_scenario)
         i_scenario->Update(t_diff);
+
+    if (i_challenge)
+        i_challenge->Update(t_diff);
 }
 
 void InstanceMap::RemovePlayerFromMap(Player* player, bool remove)
@@ -3539,8 +3556,13 @@ void InstanceMap::RemovePlayerFromMap(Player* player, bool remove)
     //if last player set unload timer
     if (!m_unloadTimer && m_mapRefManager.getSize() == 1)
         m_unloadTimer = m_unloadWhenEmpty ? MIN_UNLOAD_DELAY : std::max(sWorld->getIntConfig(CONFIG_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
+
     if (i_scenario)
         i_scenario->OnPlayerExit(player);
+
+    if (i_challenge)
+        i_challenge->OnPlayerExit(player);
+
     Map::RemovePlayerFromMap(player, remove);
     // for normal instances schedule the reset after all players have left
     SetResetSchedule(true);
@@ -3770,6 +3792,8 @@ bool Map::IsRaid() const
     return i_mapEntry && i_mapEntry->IsRaid();
 }
 
+
+
 bool Map::IsRaidOrHeroicDungeon() const
 {
     return IsRaid() || IsHeroic();
@@ -3780,6 +3804,16 @@ bool Map::IsHeroic() const
     if (DifficultyEntry const* difficulty = sDifficultyStore.LookupEntry(i_spawnMode))
         return difficulty->Flags & DIFFICULTY_FLAG_HEROIC;
     return false;
+}
+
+bool Map::IsMythic() const
+{
+    return i_spawnMode == Difficulty::DIFFICULTY_MYTHIC;
+}
+
+bool Map::IsChallenge() const
+{
+    return i_spawnMode == Difficulty::DIFFICULTY_MYTHIC_KEYSTONE;
 }
 
 bool Map::Is25ManRaid() const

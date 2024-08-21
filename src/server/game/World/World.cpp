@@ -34,6 +34,7 @@
 #include "BattlePetMgr.h"
 #include "BlackMarketMgr.h"
 #include "CalendarMgr.h"
+#include "ChallengeMgr.h"
 #include "Channel.h"
 #include "CharacterDatabaseCleaner.h"
 #include "CharacterTemplateDataStore.h"
@@ -2202,6 +2203,13 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading scenario poi data");
     sScenarioMgr->LoadScenarioPOI();
+
+    TC_LOG_INFO("server.loading", "Loading challenges");
+    sChallengeMgr->LoadDBData();
+    sChallengeMgr->GenerateWeekAffixes();
+
+    TC_LOG_INFO("server.loading", "Loading phase names...");
+    sObjectMgr->LoadPhaseNames();
 
     // Preload all cells, if required for the base maps
     if (sWorld->getBoolConfig(CONFIG_BASEMAP_LOAD_GRIDS))

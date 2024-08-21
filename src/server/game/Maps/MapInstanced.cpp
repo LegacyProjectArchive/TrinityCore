@@ -29,6 +29,7 @@
 #include "Player.h"
 #include "ScenarioMgr.h"
 #include "VMapFactory.h"
+#include "ChallengeMgr.h"
 #include "World.h"
 
 MapInstanced::MapInstanced(uint32 id, time_t expiry) : Map(id, expiry, 0, DIFFICULTY_NORMAL)
@@ -240,6 +241,12 @@ InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave* save,
     map->CreateInstanceData(load_data);
     if (InstanceScenario* instanceScenario = sScenarioMgr->CreateInstanceScenario(map, team))
         map->SetInstanceScenario(instanceScenario);
+
+    if (difficulty == Difficulty::DIFFICULTY_MYTHIC_KEYSTONE)
+    {
+        if (InstanceChallenge* instanceChallenge = sChallengeMgr->CreateInstanceChallenge(map))
+            map->SetInstanceChallenge(instanceChallenge);
+    }
 
     if (sWorld->getBoolConfig(CONFIG_INSTANCEMAP_LOAD_GRIDS))
         map->LoadAllCells();

@@ -369,6 +369,7 @@ struct TC_GAME_API CreatureTemplate
     uint32  MechanicImmuneMask;
     uint32  flags_extra;
     uint32  ScriptID;
+    std::string StringId;
     uint32  GetRandomValidModelId() const;
     uint32  GetFirstValidModelId() const;
     uint32  GetFirstInvisibleModel() const;
@@ -528,6 +529,7 @@ struct CreatureData
     uint32 phaseGroup;
     int32 terrainSwapMap;
     uint32 ScriptId;
+    std::string StringId;
     bool dbData;
 };
 

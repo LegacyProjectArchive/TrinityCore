@@ -121,6 +121,7 @@
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
 #include <G3D/g3dmath.h>
+#include "ChallengePackets.h"
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
@@ -1437,6 +1438,19 @@ uint8 Player::GetChatFlags() const
     return tag;
 }
 
+bool Player::TeleportTo(uint32 worldSafeLoc, uint32 options)
+{
+    WorldSafeLocsEntry const* loc = sWorldSafeLocsStore.LookupEntry(worldSafeLoc);
+
+    if (!loc)
+    {
+        TC_LOG_ERROR("maps", "Player::TeleportTo: Player '%s' (%s) tried to enter a unexistant world safe loc map (LocId: %u)", GetGUID().ToString().c_str(), GetName().c_str(), worldSafeLoc);
+        return false;
+    }
+
+    return TeleportTo(loc->MapID, loc->Loc.X, loc->Loc.Y, loc->Loc.Z, loc->Facing, options);
+}
+
 bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientation, uint32 options)
 {
     if (!MapManager::IsValidMapCoord(mapid, x, y, z, orientation))
@@ -1502,7 +1516,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     if (duel && GetMapId() != mapid && GetMap()->GetGameObject(GetGuidValue(PLAYER_DUEL_ARBITER)))
         DuelComplete(DUEL_FLED);
 
-    if (GetMapId() == mapid)
+    if (GetMapId() == mapid && !(options & TELE_TO_CHALLENGE_MAP))
     {
         //lets reset far teleport flag if it wasn't reset during chained teleport
         SetSemaphoreTeleportFar(false);
@@ -23644,6 +23658,19 @@ void Player::ClearComboPoints()
     RemoveAurasByType(SPELL_AURA_RETAIN_COMBO_POINTS);
 
     SetPower(POWER_COMBO_POINTS, 0);
+}
+
+bool Player::IsInGroup(ObjectGuid groupGuid) const
+{
+    if (Group const* group = GetGroup())
+        if (group->GetGUID() == groupGuid)
+            return true;
+
+    if (Group const* group = GetOriginalGroup())
+        if (group->GetGUID() == groupGuid)
+            return true;
+
+    return false;
 }
 
 void Player::SetGroup(Group* group, int8 subgroup)
